@@ -25,11 +25,22 @@
     "type": "git",
     "url": "https://github.com/JonasKenke/matomo-tracker-for-react.git"
   },
+  "bugs": {
+    "url": "https://github.com/JonasKenke/matomo-tracker-for-react/issues"
+  },
+  "homepage": "https://github.com/JonasKenke/matomo-tracker-for-react#readme",
   "files": [
     "lib",
     "es",
     "src"
   ],
+  "exports": {
+    ".": {
+      "import": "./es/index.js",
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
