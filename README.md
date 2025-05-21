@@ -171,12 +171,20 @@ If you see an error in your browser console like "Laden fehlgeschlagen für das 
 
 ---
 
+## 💖 Support
+
+If you find this package helpful, consider supporting its development:
+
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/jonas404)
+
+---
+
 ## 🙌 Credits
 
 Inspired by:
 
 - [Matomo docs on React integration](https://matomo.org/faq/new-to-piwik/how-do-i-start-tracking-data-with-matomo-on-websites-that-use-react/)
-- [`@datapunt/matomo-tracker-react`](https://github.com/DatapuntNL/matomo-tracker) (now deprecated)
+- [`@datapunt/matomo-tracker-react`](https://github.com/jonkoops/matomo-tracker) (now deprecated)
 
 ---
 
