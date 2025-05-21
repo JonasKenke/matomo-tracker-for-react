@@ -14,7 +14,8 @@ Written in **TypeScript** but designed to be fully compatible with **JavaScript*
 - ✅ **Custom Event Tracking** via `useMatomo()` hook
 - ✅ **Matomo Initialization** via `MatomoProvider`
 - ✅ **Cookie Control**: enable/disable cookies with a boolean
-- ✅ **Opt-out Support** (disable tracking)
+- ✅ **Opt-out Support**
+- ✅ **Opt-in Support**
 - ✅ **TypeScript-first**, JavaScript-friendly
 - ✅ **Tree-shakeable ESM/CJS output**
 
