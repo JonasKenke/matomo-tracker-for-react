@@ -11,36 +11,68 @@ function useMatomo(): UseMatomo {
 
   const trackPageView = useCallback(
     (customTitle?: string) => context.trackPageView(customTitle),
-    [context]
+    [context],
   );
 
   const trackEvent = useCallback(
     (category: string, action: string, name?: string, value?: number) =>
       context.trackEvent(category, action, name, value),
-    [context]
+    [context],
   );
 
   const trackGoal = useCallback(
     (goalId: number | string, revenue?: number) =>
       context.trackGoal(goalId, revenue),
-    [context]
+    [context],
   );
 
   const setUserId = useCallback(
     (userId: string) => context.setUserId(userId),
-    [context]
+    [context],
   );
 
   const trackLink = useCallback(
     (url: string, linkType: "link" | "download") =>
       context.trackLink(url, linkType),
-    [context]
+    [context],
   );
 
   const pushInstruction = useCallback(
     (instruction: any[]) => context.pushInstruction(instruction),
-    [context]
+    [context],
   );
+
+  // Consent management methods
+  const requireConsent = useCallback(() => context.requireConsent(), [context]);
+
+  const setConsentGiven = useCallback(
+    () => context.setConsentGiven(),
+    [context],
+  );
+
+  const requireCookieConsent = useCallback(
+    () => context.requireCookieConsent(),
+    [context],
+  );
+
+  const setCookieConsentGiven = useCallback(
+    () => context.setCookieConsentGiven(),
+    [context],
+  );
+
+  const forgetCookieConsentGiven = useCallback(
+    () => context.forgetCookieConsentGiven(),
+    [context],
+  );
+
+  const optUserOut = useCallback(() => context.optUserOut(), [context]);
+
+  const forgetUserOptOut = useCallback(
+    () => context.forgetUserOptOut(),
+    [context],
+  );
+
+  const deleteCookies = useCallback(() => context.deleteCookies(), [context]);
 
   return {
     trackEvent,
@@ -49,6 +81,14 @@ function useMatomo(): UseMatomo {
     setUserId,
     trackLink,
     pushInstruction,
+    requireConsent,
+    setConsentGiven,
+    requireCookieConsent,
+    setCookieConsentGiven,
+    forgetCookieConsentGiven,
+    optUserOut,
+    forgetUserOptOut,
+    deleteCookies,
   };
 }
 

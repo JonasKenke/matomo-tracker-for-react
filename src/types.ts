@@ -16,13 +16,23 @@ export interface MatomoInstance {
     category: string,
     action: string,
     name?: string,
-    value?: number
+    value?: number,
   ) => void;
   trackPageView: (customTitle?: string) => void;
   trackGoal: (goalId: number | string, revenue?: number) => void;
   setUserId: (userId: string) => void;
   trackLink: (url: string, linkType: "link" | "download") => void;
   pushInstruction: (instruction: any[]) => void;
+
+  // Consent management methods
+  requireConsent: () => void;
+  setConsentGiven: () => void;
+  requireCookieConsent: () => void;
+  setCookieConsentGiven: () => void;
+  forgetCookieConsentGiven: () => void;
+  optUserOut: () => void;
+  forgetUserOptOut: () => void;
+  deleteCookies: () => void;
 }
 
 // For useMatomo hook return type
