@@ -796,15 +796,9 @@ This package is designed with privacy and GDPR compliance in mind:
 
 ---
 
-## 💖 Support
-
-If you find this package helpful, consider supporting its development:
-
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/jonas404)
-
----
-
 ## 🙌 Credits
+
+This project is a fork of [matomo-tracker-for-react](https://github.com/JonasKenke/matomo-tracker-for-react) by JonasKenke.
 
 Inspired by:
 
