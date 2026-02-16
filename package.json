@@ -1,6 +1,6 @@
 {
   "name": "matomo-tracker-react",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "A minimal yet powerful React package that integrates Matomo analytics with React, React Router, and Next.js. Fully SSR-compatible.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -26,7 +26,8 @@
   ],
   "author": "Golrigames",
   "contributors": [
-    "Jonas Kenke (original author)"
+    "Jonas Kenke (original author)",
+    "quentinn (current maintainer)"
   ],
   "license": "MPL-2.0",
   "repository": {
