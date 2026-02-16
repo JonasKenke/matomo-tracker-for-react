@@ -54,11 +54,29 @@ class MatomoTracker {
       this.pushInstruction = (..._args: any[]): MatomoTracker => this; // No-op
       // Make other methods no-op as well
       const noOp = () => {};
+      this.enableHeartBeatTimer = noOp as any;
+      this.enableLinkTracking = noOp as any;
       this.trackEvent = noOp as any;
       this.trackPageView = noOp as any;
       this.trackSiteSearch = noOp as any;
       this.trackLink = noOp as any;
-      // ... and so on for all public methods
+      this.trackEvents = noOp as any;
+      this.stopObserving = noOp as any;
+      this.addEcommerceItem = noOp as any;
+      this.removeEcommerceItem = noOp as any;
+      this.clearEcommerceCart = noOp as any;
+      this.trackEcommerceOrder = noOp as any;
+      this.trackEcommerceCartUpdate = noOp as any;
+      this.setEcommerceView = noOp as any;
+      this.setEcommerceCategoryView = noOp as any;
+      this.requireConsent = noOp as any;
+      this.setConsentGiven = noOp as any;
+      this.requireCookieConsent = noOp as any;
+      this.setCookieConsentGiven = noOp as any;
+      this.forgetCookieConsentGiven = noOp as any;
+      this.optUserOut = noOp as any;
+      this.forgetUserOptOut = noOp as any;
+      this.deleteCookies = noOp as any;
       return;
     }
 

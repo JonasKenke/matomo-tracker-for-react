@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo, FC } from "react";
+import { useRef, useMemo, FC } from "react";
 import { TRACK_TYPES } from "./constants";
 import MatomoContext from "./MatomoContext";
 import MatomoTracker from "./MatomoTracker";
@@ -13,35 +13,33 @@ const MatomoProvider: FC<MatomoProviderProps> = ({
 }) => {
   const matomoInstanceRef = useRef<MatomoTracker | null>(null);
 
-  // Initialize MatomoTracker instance (only on client side)
-  useEffect(() => {
-    if (
-      !matomoInstanceRef.current &&
-      typeof window !== "undefined" &&
-      !disabled
-    ) {
-      const matomoSiteId =
-        typeof siteId === "string" ? parseInt(siteId, 10) : siteId;
-      if (isNaN(matomoSiteId)) {
-        console.error(
-          "Matomo siteId must be a number or a string parseable to a number.",
-        );
-      } else {
-        const effectiveConfigurations: { [key: string]: any } = {};
-        if (!trackCookies) {
-          effectiveConfigurations.disableCookies = true;
-        }
-
-        const trackerOptions: UserOptions = {
-          urlBase,
-          siteId: matomoSiteId,
-          disabled,
-          configurations: effectiveConfigurations, // Pass only relevant configurations
-        };
-        matomoInstanceRef.current = new MatomoTracker(trackerOptions);
+  // Initialize MatomoTracker instance synchronously (only on client side)
+  if (
+    !matomoInstanceRef.current &&
+    typeof window !== "undefined" &&
+    !disabled
+  ) {
+    const matomoSiteId =
+      typeof siteId === "string" ? parseInt(siteId, 10) : siteId;
+    if (isNaN(matomoSiteId)) {
+      console.error(
+        "Matomo siteId must be a number or a string parseable to a number.",
+      );
+    } else {
+      const effectiveConfigurations: { [key: string]: any } = {};
+      if (!trackCookies) {
+        effectiveConfigurations.disableCookies = true;
       }
+
+      const trackerOptions: UserOptions = {
+        urlBase,
+        siteId: matomoSiteId,
+        disabled,
+        configurations: effectiveConfigurations, // Pass only relevant configurations
+      };
+      matomoInstanceRef.current = new MatomoTracker(trackerOptions);
     }
-  }, [urlBase, siteId, disabled, trackCookies]);
+  }
 
   const matomoActions = useMemo<MatomoInstance | null>(() => {
     const currentInstance = matomoInstanceRef.current;
