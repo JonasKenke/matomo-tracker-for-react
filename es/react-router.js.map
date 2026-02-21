@@ -1,0 +1,1 @@
+{"version":3,"file":"react-router.js","sourceRoot":"","sources":["../src/react-router.ts"],"names":[],"mappings":"AAAA,uDAAuD;AACvD,OAAO,EAAE,OAAO,IAAI,mBAAmB,EAAE,MAAM,uBAAuB,CAAC;AAEvE,+CAA+C;AAC/C,OAAO,EAAE,OAAO,IAAI,cAAc,EAAE,MAAM,kBAAkB,CAAC;AAC7D,OAAO,EAAE,OAAO,IAAI,SAAS,EAAE,MAAM,aAAa,CAAC;AACnD,OAAO,EAAE,OAAO,IAAI,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAC3D,cAAc,SAAS,CAAC"}
