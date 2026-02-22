@@ -201,7 +201,7 @@ Returns an object with:
 
 ---
 
-## troubleshooting
+## Troubleshooting
 
 ### `matomo.js` script fails to load
 
