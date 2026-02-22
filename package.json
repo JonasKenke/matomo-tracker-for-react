@@ -1,7 +1,7 @@
 {
   "name": "matomo-tracker-for-react",
-  "version": "1.0.0",
-  "description": "A minimal yet powerful React package that integrates Matomo analytics with React Router.",
+  "version": "2.0.0",
+  "description": "A minimal yet powerful React package that integrates Matomo analytics with any React router.",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "lib/index.d.ts",
@@ -43,16 +43,12 @@
   },
   "peerDependencies": {
     "react": ">=16.8.0",
-    "react-dom": ">=16.8.0",
-    "react-router-dom": ">=5.0.0 || >=6.0.0"
+    "react-dom": ">=16.8.0"
   },
   "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router-dom": "^6.0.0",
-    "typescript": "^4.5.0"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.0.0"
   },
   "sideEffects": false
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef } from 'react'
-import { useLocation } from 'react-router-dom' // For automatic page view tracking
 import MatomoContext from './MatomoContext'
 import MatomoTracker from './MatomoTracker'
 import { MatomoProviderProps, MatomoInstance, UserOptions } from './types'
@@ -12,9 +11,9 @@ const MatomoProvider: React.FC<MatomoProviderProps> = ({
   siteId,
   disabled = false,
   trackCookies = true,
+  path,
 }) => {
   const matomoInstanceRef = useRef<MatomoTracker | null>(null)
-  const location = useLocation() // From react-router-dom
 
   // Initialize MatomoTracker instance
   if (!matomoInstanceRef.current && typeof window !== 'undefined' && !disabled) {
@@ -71,16 +70,26 @@ const MatomoProvider: React.FC<MatomoProviderProps> = ({
         }
       },
     }
-  }, [disabled, matomoInstanceRef.current]) // Use matomoInstanceRef.current here
+  }, [disabled])
+
+  // Warn if path is missing (v2 breaking change)
+  useEffect(() => {
+    if (path === undefined && !disabled) {
+      console.warn(
+        "[matomo-tracker-for-react] The 'path' prop is missing in <MatomoProvider>. " +
+        "Automatic page view tracking is disabled. " +
+        "To fix this, pass the current route path (e.g., location.pathname) to the 'path' prop. " +
+        "See the README for more details: https://github.com/JonasKenke/matomo-tracker-for-react/blob/main/README.md#%EF%B8%8F-upgrading-from-v1-to-v2"
+      );
+    }
+  }, [path, disabled]);
 
   // Effect for automatic page view tracking on route change
   useEffect(() => {
-    if (matomoActions && matomoActions.trackPageView && !disabled) {
-      const currentPath = location.pathname + location.search + location.hash
-      matomoActions.pushInstruction(['setCustomUrl', window.location.origin + currentPath])
-      matomoActions.trackPageView() // Track with potentially new document.title or default
+    if (matomoActions && !disabled && path !== undefined) {
+      matomoActions.trackPageView()
     }
-  }, [location, matomoActions, disabled])
+  }, [path, matomoActions, disabled])
 
 
   return (

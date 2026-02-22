@@ -9,6 +9,7 @@ export interface MatomoProviderProps {
   siteId: string | number;
   trackCookies?: boolean;
   disabled?: boolean;
+  path?: string;
 }
 
 export interface MatomoInstance {
@@ -16,7 +17,7 @@ export interface MatomoInstance {
     category: string,
     action: string,
     name?: string,
-    value?: number
+    value?: number,
   ) => void;
   trackPageView: (customTitle?: string) => void;
   trackGoal: (goalId: number | string, revenue?: number) => void;
