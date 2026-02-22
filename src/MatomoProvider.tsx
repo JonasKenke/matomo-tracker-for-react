@@ -108,7 +108,9 @@ const MatomoProvider: React.FC<MatomoProviderProps> = ({
   // Effect for automatic page view tracking on route change
   useEffect(() => {
     if (matomoActions && !disabled && path !== undefined) {
-      matomoActions.trackPageView()
+      matomoActions.pushInstruction(['setCustomUrl', window.location.origin + path])
+      matomoActions.pushInstruction(['setDocumentTitle', document.title])
+      matomoActions.pushInstruction(['trackPageView'])
     }
   }, [path, matomoActions, disabled])
 
