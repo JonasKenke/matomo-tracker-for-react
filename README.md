@@ -160,7 +160,7 @@ The library will detect page changes automatically when the `path` prop changes.
 ### Track Custom Events
 
 ```tsx
-import { useMatomo } from "matomo-tracker-for-react"; // Ensure your package name is correct
+import { useMatomo } from "matomo-tracker-for-react";
 
 const MyComponent = () => {
   const { trackEvent } = useMatomo();
@@ -198,22 +198,6 @@ Returns an object with:
 - `setUserId(userId: string)`: Sets or updates a User ID for the current visitor.
 - `trackLink(url: string, linkType: 'link' | 'download')`: Tracks an outbound link click or a download.
 - `pushInstruction(instruction: any[])`: Allows pushing any raw instruction to the Matomo `_paq` array for advanced use cases (e.g., `pushInstruction(['setUserId', 'USER_ID_HERE'])`).
-
----
-
-## 🔄 Build & Publish
-
-This package can use Vite or tsc to build and bundle the code.
-
-```bash
-npm run build
-npm publish --access public
-```
-
-The `npm run build` script generates two versions of the library:
-
-- **`lib/`**: CommonJS (CJS) modules, for broad compatibility (referenced by the `main` field in `package.json`).
-- **`es/`**: ES Modules (ESM), for modern bundlers that support tree-shaking (referenced by the `module` field in `package.json`).
 
 ---
 
