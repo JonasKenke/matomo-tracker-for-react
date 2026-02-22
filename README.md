@@ -2,7 +2,7 @@
 
 ## 📦 Overview
 
-A minimal yet powerful React package that integrates [Matomo](https://matomo.org/) analytics with any React router (like [React Router](https://reactrouter.com/) or [TanStack Router](https://tanstack.com/router)), enabling automatic page tracking and custom event tracking out of the box.
+A minimal yet powerful React package that integrates [Matomo](https://matomo.org/) analytics with any React router, including [React Router](https://reactrouter.com/), [TanStack Router](https://tanstack.com/router), and [Next.js](https://nextjs.org/), enabling automatic page tracking and custom event tracking out of the box.
 
 Written in **TypeScript** but designed to be fully compatible with **JavaScript** projects as well.
 
