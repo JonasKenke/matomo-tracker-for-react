@@ -5,6 +5,27 @@ import { MatomoProviderProps, MatomoInstance, UserOptions } from './types'
 import { TRACK_TYPES } from './constants'
 
 
+/**
+ * Initializes Matomo analytics and provides tracking to all child components
+ * via the `useMatomo()` hook.
+ *
+ * Works with any React router — pass the current path via the `path` prop to
+ * enable automatic page view tracking on route changes.
+ *
+ * @example
+ * // React Router
+ * const { pathname, search, hash } = useLocation();
+ * <MatomoProvider urlBase="https://matomo.example.com" siteId={1} path={pathname + search + hash}>
+ *   <App />
+ * </MatomoProvider>
+ *
+ * @example
+ * // Next.js App Router
+ * const pathname = usePathname();
+ * <MatomoProvider urlBase="https://matomo.example.com" siteId={1} path={pathname}>
+ *   {children}
+ * </MatomoProvider>
+ */
 const MatomoProvider: React.FC<MatomoProviderProps> = ({
   children,
   urlBase,
