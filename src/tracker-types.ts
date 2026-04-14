@@ -6,7 +6,7 @@ export interface CustomDimension {
 export type CustomDimensionValue = string | number | boolean;
 
 export type HookCustomDimensions = Partial<
-  Record<`dimension${number}`, CustomDimensionValue>
+  Record<`dimension${bigint}`, CustomDimensionValue>
 >;
 
 export type CustomDimensionsInput =

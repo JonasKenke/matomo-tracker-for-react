@@ -259,7 +259,7 @@ class MatomoTracker {
 
     this.track({
       data: [TRACK_TYPES.TRACK_VIEW],
-      ...params,
+      ...(params ?? {}),
       documentTitle,
     });
   }
