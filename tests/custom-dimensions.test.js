@@ -206,6 +206,31 @@ test("invalid dimension ids throw explicit errors", (t) => {
   );
 });
 
+test("undefined or null object dimensions are skipped", (t) => {
+  setupBrowserEnv();
+  t.after(cleanupBrowserEnv);
+
+  const tracker = createTracker();
+
+  tracker.trackEvent({
+    category: "Category",
+    action: "Action",
+    customDimensions: {
+      dimension1: undefined,
+      dimension2: "kept",
+      dimension3: null,
+    },
+  });
+
+  assert.deepEqual(window._paq, [
+    ["setCustomDimension", 2, "kept"],
+    ["setCustomUrl", "https://app.example.com/current"],
+    ["setDocumentTitle", "Test Title"],
+    ["trackEvent", "Category", "Action", undefined, undefined],
+    ["deleteCustomDimension", 2],
+  ]);
+});
+
 test("custom dimensions are cleaned up even when tracking throws", (t) => {
   setupBrowserEnv();
   t.after(cleanupBrowserEnv);

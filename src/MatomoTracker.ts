@@ -251,7 +251,17 @@ class MatomoTracker {
   // Tracks page views
   // https://developer.matomo.org/guides/spa-tracking#tracking-a-new-page-view
   trackPageView(params?: TrackPageViewParams): void {
-    this.track({ data: [TRACK_TYPES.TRACK_VIEW], ...params });
+    const documentTitle =
+      typeof params?.documentTitle === "string" &&
+      params.documentTitle.length > 0
+        ? params.documentTitle
+        : undefined;
+
+    this.track({
+      data: [TRACK_TYPES.TRACK_VIEW],
+      ...params,
+      documentTitle,
+    });
   }
 
   // Tracks a conversion for a specific goal
@@ -357,26 +367,36 @@ class MatomoTracker {
       return customDimensions;
     }
 
-    return Object.entries(customDimensions).map(([dimensionKey, dimensionValue]) => {
-      const keyMatch = /^dimension(\d+)$/.exec(dimensionKey);
-      if (!keyMatch) {
-        throw new Error(
-          `Error: Invalid custom dimension key "${dimensionKey}". Use "dimension{number}".`
-        );
-      }
+    const normalizedCustomDimensions: CustomDimension[] = [];
 
-      const id = Number(keyMatch[1]);
-      if (!Number.isInteger(id) || id < 1) {
-        throw new Error(
-          `Error: Custom dimension ID in "${dimensionKey}" must be a positive integer.`
-        );
-      }
+    Object.entries(customDimensions).forEach(
+      ([dimensionKey, dimensionValue]) => {
+        const keyMatch = /^dimension(\d+)$/.exec(dimensionKey);
+        if (!keyMatch) {
+          throw new Error(
+            `Error: Invalid custom dimension key "${dimensionKey}". Use "dimension{number}".`
+          );
+        }
 
-      return {
-        id,
-        value: String(dimensionValue),
-      };
-    });
+        const id = Number(keyMatch[1]);
+        if (!Number.isInteger(id) || id < 1) {
+          throw new Error(
+            `Error: Custom dimension ID in "${dimensionKey}" must be a positive integer.`
+          );
+        }
+
+        if (dimensionValue === undefined || dimensionValue === null) {
+          return;
+        }
+
+        normalizedCustomDimensions.push({
+          id,
+          value: String(dimensionValue),
+        });
+      }
+    );
+
+    return normalizedCustomDimensions;
   }
 
   private withCustomDimensions(

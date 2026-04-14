@@ -3,6 +3,7 @@ import MatomoContext from './MatomoContext'
 import MatomoTracker from './MatomoTracker'
 import { MatomoProviderProps, MatomoInstance, UserOptions } from './types'
 import { TRACK_TYPES } from './constants'
+import type { HookCustomDimensions } from './tracker-types'
 
 
 /**
@@ -81,11 +82,18 @@ const MatomoProvider: React.FC<MatomoProviderProps> = ({
           value,
           customDimensions,
         }),
-      trackPageView: (customTitle, customDimensions) =>
-        currentInstance.trackPageView({
-          documentTitle: customTitle,
-          customDimensions,
-        }),
+      trackPageView: (customTitle, customDimensions) => {
+        const pageViewOptions: {
+          documentTitle?: string;
+          customDimensions?: HookCustomDimensions;
+        } = { customDimensions };
+
+        if (typeof customTitle === "string" && customTitle.length > 0) {
+          pageViewOptions.documentTitle = customTitle;
+        }
+
+        currentInstance.trackPageView(pageViewOptions);
+      },
       trackGoal: (goalId, revenue, customDimensions) =>
         currentInstance.trackGoal({ goalId, revenue, customDimensions }),
       setUserId: (uid) => currentInstance.pushInstruction(TRACK_TYPES.SET_USER_ID, uid),

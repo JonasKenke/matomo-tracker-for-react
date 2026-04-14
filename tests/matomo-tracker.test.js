@@ -88,6 +88,22 @@ test("trackPageView respects custom title and href", (t) => {
   ]);
 });
 
+test("trackPageView falls back to document title when given an empty string", (t) => {
+  setupBrowserEnv();
+  t.after(cleanupBrowserEnv);
+
+  const tracker = createTracker();
+  tracker.trackPageView({
+    documentTitle: "",
+  });
+
+  assert.deepEqual(window._paq, [
+    ["setCustomUrl", "https://app.example.com/current"],
+    ["setDocumentTitle", "Initial Title"],
+    ["trackPageView"],
+  ]);
+});
+
 test("trackEvent requires category and action", (t) => {
   setupBrowserEnv();
   t.after(cleanupBrowserEnv);
