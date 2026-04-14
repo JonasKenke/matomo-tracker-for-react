@@ -88,6 +88,23 @@ test("trackPageView respects custom title and href", (t) => {
   ]);
 });
 
+test("trackPageView accepts a Location object for href", (t) => {
+  setupBrowserEnv();
+  t.after(cleanupBrowserEnv);
+
+  const tracker = createTracker();
+  tracker.trackPageView({
+    documentTitle: "From Location",
+    href: window.location,
+  });
+
+  assert.deepEqual(window._paq, [
+    ["setCustomUrl", "https://app.example.com/current"],
+    ["setDocumentTitle", "From Location"],
+    ["trackPageView"],
+  ]);
+});
+
 test("trackPageView falls back to document title when given an empty string", (t) => {
   setupBrowserEnv();
   t.after(cleanupBrowserEnv);

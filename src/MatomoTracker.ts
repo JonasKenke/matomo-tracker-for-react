@@ -147,7 +147,7 @@ class MatomoTracker {
             });
           } else {
             throw new Error(
-              `Error: data-matomo-category and data-matomo-action are required.`
+              `data-matomo-category and data-matomo-action are required.`
             );
           }
         });
@@ -214,7 +214,7 @@ class MatomoTracker {
         ...otherParams,
       });
     } else {
-      throw new Error(`Error: category and action are required.`);
+      throw new Error(`category and action are required.`);
     }
   }
 
@@ -232,7 +232,7 @@ class MatomoTracker {
         ...otherParams,
       });
     } else {
-      throw new Error(`Error: keyword is required.`);
+      throw new Error(`keyword is required.`);
     }
   }
 
@@ -374,14 +374,14 @@ class MatomoTracker {
         const keyMatch = /^dimension(\d+)$/.exec(dimensionKey);
         if (!keyMatch) {
           throw new Error(
-            `Error: Invalid custom dimension key "${dimensionKey}". Use "dimension{number}".`
+            `Invalid custom dimension key "${dimensionKey}". Use "dimension{number}".`
           );
         }
 
         const id = Number(keyMatch[1]);
         if (!Number.isInteger(id) || id < 1) {
           throw new Error(
-            `Error: Custom dimension ID in "${dimensionKey}" must be a positive integer.`
+            `Custom dimension ID in "${dimensionKey}" must be a positive integer.`
           );
         }
 
@@ -397,6 +397,18 @@ class MatomoTracker {
     );
 
     return normalizedCustomDimensions;
+  }
+
+  private resolveHref(href?: string | Location): string {
+    if (typeof href === "string") {
+      return href;
+    }
+
+    if (href && typeof href.href === "string") {
+      return href.href;
+    }
+
+    return window.location.href;
   }
 
   private withCustomDimensions(
@@ -439,7 +451,7 @@ class MatomoTracker {
 
     if (data.length) {
       this.withCustomDimensions(customDimensions, () => {
-        this.pushInstruction("setCustomUrl", href ?? window.location.href);
+        this.pushInstruction("setCustomUrl", this.resolveHref(href));
         // Use provided documentTitle, fallback to actual document.title only if not provided
         this.pushInstruction(
           "setDocumentTitle",
