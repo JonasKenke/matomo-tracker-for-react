@@ -1,4 +1,5 @@
 import React from "react";
+import type { HookCustomDimensions } from "./tracker-types";
 
 // Re-export tracker types for convenience if needed by consumers of the React package
 export * from "./tracker-types";
@@ -45,11 +46,23 @@ export interface MatomoInstance {
     action: string,
     name?: string,
     value?: number,
+    customDimensions?: HookCustomDimensions,
   ) => void;
-  trackPageView: (customTitle?: string) => void;
-  trackGoal: (goalId: number | string, revenue?: number) => void;
+  trackPageView: (
+    customTitle?: string,
+    customDimensions?: HookCustomDimensions,
+  ) => void;
+  trackGoal: (
+    goalId: number | string,
+    revenue?: number,
+    customDimensions?: HookCustomDimensions,
+  ) => void;
   setUserId: (userId: string) => void;
-  trackLink: (url: string, linkType: "link" | "download") => void;
+  trackLink: (
+    url: string,
+    linkType: "link" | "download",
+    customDimensions?: HookCustomDimensions,
+  ) => void;
   pushInstruction: (instruction: any[]) => void;
 }
 

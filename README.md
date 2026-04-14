@@ -173,6 +173,27 @@ const MyComponent = () => {
 };
 ```
 
+### Track with Custom Dimensions (single call)
+
+```tsx
+import { useMatomo } from "matomo-tracker-for-react";
+
+const MyComponent = () => {
+  const { trackEvent } = useMatomo();
+
+  const handleClick = () => {
+    trackEvent("Button", "Click", "Pricing CTA", undefined, {
+      dimension1: "pro",
+      dimension2: "A/B-test-variant-b",
+    });
+  };
+
+  return <button onClick={handleClick}>Click Me</button>;
+};
+```
+
+`customDimensions` are hit-scoped in these helpers, so they are automatically removed after each call.
+
 ---
 
 ## ⚙️ API
@@ -192,11 +213,13 @@ const MyComponent = () => {
 
 Returns an object with:
 
-- `trackEvent(category: string, action: string, name?: string, value?: number)`: Tracks a custom event.
-- `trackPageView(customTitle?: string)`: Tracks a page view. Useful for SPAs if automatic tracking needs fine-tuning or if you want to set a custom title.
-- `trackGoal(goalId: number | string, revenue?: number)`: Tracks a conversion for a specific goal.
+- `customDimensions` below accepts an object like `{ dimension1: "value", dimension2: "value" }`.
+
+- `trackEvent(category: string, action: string, name?: string, value?: number, customDimensions?)`: Tracks a custom event.
+- `trackPageView(customTitle?: string, customDimensions?)`: Tracks a page view. Useful for SPAs if automatic tracking needs fine-tuning or if you want to set a custom title.
+- `trackGoal(goalId: number | string, revenue?: number, customDimensions?)`: Tracks a conversion for a specific goal.
 - `setUserId(userId: string)`: Sets or updates a User ID for the current visitor.
-- `trackLink(url: string, linkType: 'link' | 'download')`: Tracks an outbound link click or a download.
+- `trackLink(url: string, linkType: 'link' | 'download', customDimensions?)`: Tracks an outbound link click or a download.
 - `pushInstruction(instruction: any[])`: Allows pushing any raw instruction to the Matomo `_paq` array for advanced use cases (e.g., `pushInstruction(['setUserId', 'USER_ID_HERE'])`).
 
 ---

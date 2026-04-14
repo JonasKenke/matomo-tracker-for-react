@@ -3,6 +3,17 @@ export interface CustomDimension {
   value: string;
 }
 
+export type CustomDimensionValue = string | number | boolean;
+
+export type HookCustomDimensions = Partial<
+  Record<`dimension${bigint}`, CustomDimensionValue>
+>;
+
+export type CustomDimensionsInput =
+  | boolean
+  | CustomDimension[]
+  | HookCustomDimensions;
+
 export interface UserOptions {
   urlBase: string;
   siteId: number; // Matomo site ID is typically a number
@@ -23,7 +34,7 @@ export interface UserOptions {
 export interface TrackPageViewParams {
   documentTitle?: string;
   href?: string | Location;
-  customDimensions?: boolean | CustomDimension[];
+  customDimensions?: CustomDimensionsInput;
 }
 
 export interface TrackParams extends TrackPageViewParams {
@@ -38,14 +49,14 @@ export interface TrackEventParams {
   // Allow other params to be passed through for flexibility with customDimensions, etc.
   documentTitle?: string;
   href?: string | Location;
-  customDimensions?: boolean | CustomDimension[];
+  customDimensions?: CustomDimensionsInput;
 }
 
 export interface TrackLinkParams {
   href: string;
   linkType?: "download" | "link";
   // Allow other params
-  customDimensions?: boolean | CustomDimension[];
+  customDimensions?: CustomDimensionsInput;
 }
 
 export interface TrackSiteSearchParams extends TrackPageViewParams {
@@ -86,4 +97,5 @@ export interface SetEcommerceViewParams {
 export interface TrackGoalParams {
   goalId: number | string;
   revenue?: number;
+  customDimensions?: CustomDimensionsInput;
 }
