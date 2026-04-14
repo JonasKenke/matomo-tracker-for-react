@@ -3,9 +3,11 @@ import {
   AddEcommerceItemParams,
   RemoveEcommerceItemParams,
   CustomDimension,
+  CustomDimensionsInput,
   SetEcommerceViewParams,
   TrackEcommerceOrderParams,
   TrackEventParams,
+  TrackGoalParams,
   TrackLinkParams,
   TrackPageViewParams,
   TrackParams,
@@ -56,6 +58,7 @@ class MatomoTracker {
       const noOp = () => {};
       this.trackEvent = noOp as any;
       this.trackPageView = noOp as any;
+      this.trackGoal = noOp as any;
       this.trackSiteSearch = noOp as any;
       this.trackLink = noOp as any;
       // ... and so on for all public methods
@@ -240,26 +243,22 @@ class MatomoTracker {
     linkType = "link",
     customDimensions,
   }: TrackLinkParams): void {
-    if (
-      customDimensions &&
-      Array.isArray(customDimensions) &&
-      customDimensions.length
-    ) {
-      customDimensions.forEach((customDimension: CustomDimension) =>
-        this.pushInstruction(
-          "setCustomDimension",
-          customDimension.id,
-          customDimension.value
-        )
-      );
-    }
-    this.pushInstruction(TRACK_TYPES.TRACK_LINK, href, linkType);
+    this.withCustomDimensions(customDimensions, () => {
+      this.pushInstruction(TRACK_TYPES.TRACK_LINK, href, linkType);
+    });
   }
 
   // Tracks page views
   // https://developer.matomo.org/guides/spa-tracking#tracking-a-new-page-view
   trackPageView(params?: TrackPageViewParams): void {
     this.track({ data: [TRACK_TYPES.TRACK_VIEW], ...params });
+  }
+
+  // Tracks a conversion for a specific goal
+  trackGoal({ goalId, revenue, customDimensions }: TrackGoalParams): void {
+    this.withCustomDimensions(customDimensions, () => {
+      this.pushInstruction(TRACK_TYPES.TRACK_GOAL, goalId, revenue);
+    });
   }
 
   // Adds a product to an Ecommerce order to be tracked via trackEcommerceOrder.
@@ -347,6 +346,68 @@ class MatomoTracker {
     this.setEcommerceView({ productCategory, productName: false, sku: false });
   }
 
+  private normalizeCustomDimensions(
+    customDimensions: CustomDimensionsInput = false
+  ): CustomDimension[] {
+    if (!customDimensions || customDimensions === true) {
+      return [];
+    }
+
+    if (Array.isArray(customDimensions)) {
+      return customDimensions;
+    }
+
+    return Object.entries(customDimensions).map(([dimensionKey, dimensionValue]) => {
+      const keyMatch = /^dimension(\d+)$/.exec(dimensionKey);
+      if (!keyMatch) {
+        throw new Error(
+          `Error: Invalid custom dimension key "${dimensionKey}". Use "dimension{number}".`
+        );
+      }
+
+      const id = Number(keyMatch[1]);
+      if (!Number.isInteger(id) || id < 1) {
+        throw new Error(
+          `Error: Custom dimension ID in "${dimensionKey}" must be a positive integer.`
+        );
+      }
+
+      return {
+        id,
+        value: String(dimensionValue),
+      };
+    });
+  }
+
+  private withCustomDimensions(
+    customDimensions: CustomDimensionsInput = false,
+    callback: () => void
+  ): void {
+    const normalizedCustomDimensions =
+      this.normalizeCustomDimensions(customDimensions);
+
+    if (!normalizedCustomDimensions.length) {
+      callback();
+      return;
+    }
+
+    normalizedCustomDimensions.forEach((customDimension: CustomDimension) =>
+      this.pushInstruction(
+        "setCustomDimension",
+        customDimension.id,
+        customDimension.value
+      )
+    );
+
+    try {
+      callback();
+    } finally {
+      normalizedCustomDimensions.forEach((customDimension: CustomDimension) =>
+        this.pushInstruction("deleteCustomDimension", customDimension.id)
+      );
+    }
+  }
+
   // Sends the tracked page/view/search to Matomo
   private track({
     data = [],
@@ -357,30 +418,15 @@ class MatomoTracker {
     if (typeof window === "undefined") return;
 
     if (data.length) {
-      if (
-        customDimensions &&
-        Array.isArray(customDimensions) &&
-        customDimensions.length
-      ) {
-        customDimensions.forEach(
-          (
-            customDimension: CustomDimension // Corrected type
-          ) =>
-            this.pushInstruction(
-              "setCustomDimension",
-              customDimension.id,
-              customDimension.value
-            )
+      this.withCustomDimensions(customDimensions, () => {
+        this.pushInstruction("setCustomUrl", href ?? window.location.href);
+        // Use provided documentTitle, fallback to actual document.title only if not provided
+        this.pushInstruction(
+          "setDocumentTitle",
+          documentTitle ?? window.document.title
         );
-      }
-
-      this.pushInstruction("setCustomUrl", href ?? window.location.href);
-      // Use provided documentTitle, fallback to actual document.title only if not provided
-      this.pushInstruction(
-        "setDocumentTitle",
-        documentTitle ?? window.document.title
-      );
-      this.pushInstruction(...(data as [string, ...any[]]));
+        this.pushInstruction(...(data as [string, ...any[]]));
+      });
     }
   }
 

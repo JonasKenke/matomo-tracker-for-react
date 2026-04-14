@@ -1,6 +1,7 @@
 import { useContext, useCallback } from "react";
 import MatomoContext from "./MatomoContext";
 import { UseMatomo } from "./types";
+import type { HookCustomDimensions } from "./tracker-types";
 
 function useMatomo(): UseMatomo {
   const context = useContext(MatomoContext);
@@ -10,19 +11,28 @@ function useMatomo(): UseMatomo {
   }
 
   const trackPageView = useCallback(
-    (customTitle?: string) => context.trackPageView(customTitle),
+    (customTitle?: string, customDimensions?: HookCustomDimensions) =>
+      context.trackPageView(customTitle, customDimensions),
     [context]
   );
 
   const trackEvent = useCallback(
-    (category: string, action: string, name?: string, value?: number) =>
-      context.trackEvent(category, action, name, value),
+    (
+      category: string,
+      action: string,
+      name?: string,
+      value?: number,
+      customDimensions?: HookCustomDimensions
+    ) => context.trackEvent(category, action, name, value, customDimensions),
     [context]
   );
 
   const trackGoal = useCallback(
-    (goalId: number | string, revenue?: number) =>
-      context.trackGoal(goalId, revenue),
+    (
+      goalId: number | string,
+      revenue?: number,
+      customDimensions?: HookCustomDimensions
+    ) => context.trackGoal(goalId, revenue, customDimensions),
     [context]
   );
 
@@ -32,8 +42,11 @@ function useMatomo(): UseMatomo {
   );
 
   const trackLink = useCallback(
-    (url: string, linkType: "link" | "download") =>
-      context.trackLink(url, linkType),
+    (
+      url: string,
+      linkType: "link" | "download",
+      customDimensions?: HookCustomDimensions
+    ) => context.trackLink(url, linkType, customDimensions),
     [context]
   );
 

@@ -73,15 +73,24 @@ const MatomoProvider: React.FC<MatomoProviderProps> = ({
     }
 
     return {
-      trackEvent: (category, action, name, value) =>
-        currentInstance.trackEvent({ category, action, name, value }),
-      trackPageView: (customTitle) =>
-        currentInstance.trackPageView(customTitle ? { documentTitle: customTitle } : undefined),
-      trackGoal: (goalId, revenue) =>
-        currentInstance.pushInstruction(TRACK_TYPES.TRACK_GOAL, goalId, revenue),
+      trackEvent: (category, action, name, value, customDimensions) =>
+        currentInstance.trackEvent({
+          category,
+          action,
+          name,
+          value,
+          customDimensions,
+        }),
+      trackPageView: (customTitle, customDimensions) =>
+        currentInstance.trackPageView({
+          documentTitle: customTitle,
+          customDimensions,
+        }),
+      trackGoal: (goalId, revenue, customDimensions) =>
+        currentInstance.trackGoal({ goalId, revenue, customDimensions }),
       setUserId: (uid) => currentInstance.pushInstruction(TRACK_TYPES.SET_USER_ID, uid),
-      trackLink: (url, linkType) =>
-        currentInstance.trackLink({ href: url, linkType }),
+      trackLink: (url, linkType, customDimensions) =>
+        currentInstance.trackLink({ href: url, linkType, customDimensions }),
       pushInstruction: (instruction) => {
         if (Array.isArray(instruction) && instruction.length > 0) {
           const [name, ...args] = instruction;

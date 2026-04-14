@@ -1,6 +1,6 @@
 {
   "name": "matomo-tracker-for-react",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A minimal yet powerful React package that integrates Matomo analytics with any React router.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -9,6 +9,7 @@
     "build": "npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc -p tsconfig.json --module commonjs --outDir lib",
     "build:esm": "tsc -p tsconfig.json --module esnext --outDir es",
+    "test": "npm run build && node --test tests/*.test.js",
     "clean": "rm -rf lib es *.tsbuildinfo",
     "prepublishOnly": "npm run clean && npm run build"
   },
