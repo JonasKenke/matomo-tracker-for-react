@@ -146,8 +146,19 @@ class MatomoTracker {
     this.pushInstruction("enableHeartBeatTimer", seconds);
   }
 
+  /**
+   * Enables or disables Matomo's automatic link tracking.
+   *
+   * matomo.js only installs link tracking when the `enableLinkTracking`
+   * instruction is queued (there is no default install in the async path).
+   * When disabled we therefore push nothing: `disableLinkTracking` only
+   * exists in newer matomo.js versions — on older ones pushing it throws
+   * and aborts processing of the remaining `_paq` queue.
+   */
   enableLinkTracking(active: boolean): void {
-    this.pushInstruction("enableLinkTracking", active);
+    if (active) {
+      this.pushInstruction("enableLinkTracking");
+    }
   }
 
   private trackEventsForElements(elements: HTMLElement[]) {

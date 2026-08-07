@@ -237,6 +237,7 @@ a `MutationObserver` under the hood.
 | `siteId`        | `string` or `number` | ✅       | Your Matomo website ID.                                                    |
 | `path`          | `string`             | ❌       | The current path of the router. Used for automatic page view tracking.     |
 | `trackCookies?` | `boolean`            | ❌       | If `false`, disables cookies (`disableCookies: true`). Default: `true`.    |
+| `linkTracking?` | `boolean`            | ❌       | If `false`, disables Matomo's automatic link click tracking. Useful for SPAs where it interferes with client-side routing. Default: `true`. |
 | `disabled?`     | `boolean`            | ❌       | If `true`, disables all tracking. Default: `false`.                        |
 
 ### `useMatomo()` Hook

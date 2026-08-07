@@ -33,6 +33,7 @@ const MatomoProvider: React.FC<MatomoProviderProps> = ({
   siteId,
   disabled = false,
   trackCookies = true,
+  linkTracking = true,
   path,
 }) => {
   const [tracker, setTracker] = useState<MatomoTracker | null>(null)
@@ -58,6 +59,7 @@ const MatomoProvider: React.FC<MatomoProviderProps> = ({
       urlBase,
       siteId: matomoSiteId,
       disabled,
+      linkTracking,
       configurations,
     })
 
