@@ -262,8 +262,16 @@ Returns an object with:
 
 ## Troubleshooting
 
-### `matomo.js` script fails to load
+### Double page views in development (React Strict Mode)
 
+If you see each page view tracked twice while developing, your app wraps the
+provider in `<React.StrictMode>`: Strict Mode intentionally mounts effects
+twice in development. Production builds track each page view exactly once —
+this is a dev-only artifact and requires no action.
+
+---
+
+### `matomo.js` script fails to load
 If you see an error in your browser console like "Laden fehlgeschlagen für das <script> mit der Quelle..." or "Failed to load resource..." for `matomo.js`, even if you can access the `matomo.js` URL directly in your browser, consider these common causes:
 
 1.  **CORS (Cross-Origin Resource Sharing)**:
