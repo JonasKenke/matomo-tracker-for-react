@@ -284,6 +284,37 @@ If you see an error in your browser console like "Laden fehlgeschlagen für das 
 
 ---
 
+## 🧪 Automated Testing
+
+### Unit tests
+
+```bash
+npm test
+```
+
+Builds the package and runs the tracker/provider unit tests against the compiled output.
+
+### End-to-end tests (live Matomo instance)
+
+`npm run test:e2e` drives the example app in headless Chrome, performs real tracking
+interactions, and asserts the results via the Matomo Reporting API. It verifies page
+views, events, manual link tracking, automatic link tracking, and that `linkTracking={false}`
+disables automatic link clicks while keeping everything else working.
+
+Setup (the token stays local — `tests/e2e/.env` is gitignored):
+
+```bash
+cp tests/e2e/.env.example tests/e2e/.env
+# fill in MATOMO_URL, MATOMO_SITE_ID, MATOMO_TOKEN
+npm run test:e2e
+```
+
+The suite boots its own dev server (port 3100) and uses the system Chromium by default
+(override with `PUPPETEER_EXECUTABLE_PATH`). The example app must be installed and the
+local package build must be copied into its `node_modules` (see `examples/`).
+
+---
+
 ## 🔒 Privacy & Compliance
 
 - Fully respects user privacy: cookies and tracking can be disabled.

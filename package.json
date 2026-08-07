@@ -10,6 +10,7 @@
     "build:cjs": "tsc -p tsconfig.json --module commonjs --outDir lib",
     "build:esm": "tsc -p tsconfig.json --module esnext --outDir es",
     "test": "npm run build && node --test tests/*.test.js",
+    "test:e2e": "node --test tests/e2e/*.test.js",
     "pretest": "npm run build",
     "clean": "rm -rf lib es *.tsbuildinfo",
     "prepublishOnly": "npm run clean && npm run build"
@@ -49,6 +50,7 @@
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "puppeteer-core": "^25.5.0",
     "typescript": "^5.0.0"
   },
   "sideEffects": false
