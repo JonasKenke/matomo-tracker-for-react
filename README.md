@@ -252,7 +252,6 @@ Returns an object with:
 - `setUserId(userId: string)`: Sets or updates a User ID for the current visitor.
 - `trackLink(url: string, linkType: 'link' | 'download', customDimensions?)`: Tracks an outbound link click or a download.
 - `trackSiteSearch(keyword: string, category?: string, count?: number, customDimensions?)`: Tracks an internal site search.
-- `setUserId(userId: string)`: Sets or updates a User ID for the current visitor.
 - `resetUserId()`: Clears the currently set User ID (useful on logout).
 - `optUserOut()`: Opts the current user out of tracking.
 - `forgetUserOptOut()`: Reverses a previous opt-out, allowing tracking again.

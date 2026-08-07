@@ -1,6 +1,6 @@
 {
   "name": "matomo-tracker-for-react",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A minimal yet powerful React package that integrates Matomo analytics with any React router.",
   "main": "lib/index.js",
   "module": "es/index.js",
