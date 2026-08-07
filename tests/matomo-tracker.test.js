@@ -203,3 +203,50 @@ test("setTrackerUrl can re-create _paq when missing", (t) => {
     ["setTrackerUrl", "https://matomo.example.com/matomo.php"],
   ]);
 });
+
+test("destroy() removes injected script from the DOM", (t) => {
+  const removedScripts = [];
+  const insertedScripts = [];
+
+  const existingScript = {
+    parentNode: {
+      insertBefore: (scriptElement) => {
+        // Simulate DOM insertion: the script element gets a parentNode
+        scriptElement.parentNode = {
+          removeChild: (el) => {
+            removedScripts.push(el);
+          },
+        };
+        insertedScripts.push(scriptElement);
+      },
+    },
+  };
+
+  global.window = {
+    _paq: [],
+    location: {
+      href: "https://app.example.com/current",
+      origin: "https://app.example.com",
+    },
+    document: {
+      title: "Test",
+      createElement: () => ({}),
+      getElementsByTagName: () => [existingScript],
+    },
+  };
+  global.document = global.window.document;
+
+  t.after(cleanupBrowserEnv);
+
+  const tracker = new MatomoTracker({
+    urlBase: "https://matomo.example.com",
+    siteId: 9,
+  });
+
+  assert.equal(insertedScripts.length, 1, "script should be injected");
+
+  tracker.destroy();
+
+  assert.equal(removedScripts.length, 1, "destroy should call removeChild on the injected script");
+  assert.equal(removedScripts[0], insertedScripts[0], "destroy should remove the same script that was injected");
+});

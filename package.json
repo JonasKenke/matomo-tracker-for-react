@@ -10,6 +10,7 @@
     "build:cjs": "tsc -p tsconfig.json --module commonjs --outDir lib",
     "build:esm": "tsc -p tsconfig.json --module esnext --outDir es",
     "test": "npm run build && node --test tests/*.test.js",
+    "pretest": "npm run build",
     "clean": "rm -rf lib es *.tsbuildinfo",
     "prepublishOnly": "npm run clean && npm run build"
   },
@@ -32,8 +33,7 @@
   "homepage": "https://github.com/JonasKenke/matomo-tracker-for-react#readme",
   "files": [
     "lib",
-    "es",
-    "src"
+    "es"
   ],
   "exports": {
     ".": {

@@ -6,11 +6,10 @@ export interface CustomDimension {
 export type CustomDimensionValue = string | number | boolean;
 
 export type HookCustomDimensions = Partial<
-  Record<`dimension${bigint}`, CustomDimensionValue>
+  Record<`dimension${number}`, CustomDimensionValue>
 >;
 
 export type CustomDimensionsInput =
-  | boolean
   | CustomDimension[]
   | HookCustomDimensions;
 
@@ -87,8 +86,8 @@ export interface RemoveEcommerceItemParams {
 }
 
 export interface SetEcommerceViewParams {
-  sku: string | boolean;
-  productName?: string | boolean;
+  sku: string | false;
+  productName?: string | false;
   productCategory?: string;
   productPrice?: number;
 }

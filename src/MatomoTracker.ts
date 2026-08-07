@@ -23,6 +23,7 @@ declare global {
 
 class MatomoTracker {
   private mutationObserver?: MutationObserver;
+  private scriptElement?: HTMLScriptElement;
   private isInitialized = false;
 
   constructor(userOptions: UserOptions) {
@@ -121,7 +122,24 @@ class MatomoTracker {
     if (scripts && scripts.parentNode) {
       scripts.parentNode.insertBefore(scriptElement, scripts);
     }
+    this.scriptElement = scriptElement;
     this.isInitialized = true;
+  }
+
+  /**
+   * Cleans up resources: disconnects the MutationObserver and removes
+   * the injected Matomo script from the DOM. Call this when the
+   * provider unmounts or tracking is disabled.
+   */
+  destroy(): void {
+    if (this.mutationObserver) {
+      this.mutationObserver.disconnect();
+      this.mutationObserver = undefined;
+    }
+    if (this.scriptElement && this.scriptElement.parentNode) {
+      this.scriptElement.parentNode.removeChild(this.scriptElement);
+      this.scriptElement = undefined;
+    }
   }
 
   enableHeartBeatTimer(seconds: number): void {
@@ -357,9 +375,9 @@ class MatomoTracker {
   }
 
   private normalizeCustomDimensions(
-    customDimensions: CustomDimensionsInput = false
+    customDimensions?: CustomDimensionsInput
   ): CustomDimension[] {
-    if (!customDimensions || customDimensions === true) {
+    if (!customDimensions || typeof customDimensions === "boolean") {
       return [];
     }
 
@@ -412,7 +430,7 @@ class MatomoTracker {
   }
 
   private withCustomDimensions(
-    customDimensions: CustomDimensionsInput = false,
+    customDimensions: CustomDimensionsInput | undefined,
     callback: () => void
   ): void {
     const normalizedCustomDimensions =
@@ -445,7 +463,7 @@ class MatomoTracker {
     data = [],
     documentTitle, // Changed: use passed documentTitle or fallback to window.document.title later
     href,
-    customDimensions = false,
+    customDimensions,
   }: TrackParams): void {
     if (typeof window === "undefined") return;
 
