@@ -63,12 +63,57 @@ test("constructor initializes tracker instructions and script injection", (t) =>
     ["setTrackerUrl", "https://matomo.example.com/matomo.php"],
     ["setSiteId", 9],
     ["enableHeartBeatTimer", 15],
-    ["enableLinkTracking", true],
+    ["enableLinkTracking"],
   ]);
   assert.equal(insertedScripts.length, 1);
   assert.equal(insertedScripts[0].src, "https://matomo.example.com/matomo.js");
   assert.equal(insertedScripts[0].async, true);
   assert.equal(insertedScripts[0].defer, true);
+});
+
+test("linkTracking: false leaves automatic link tracking uninstalled", (t) => {
+  setupBrowserEnv();
+  t.after(cleanupBrowserEnv);
+
+  new MatomoTracker({
+    urlBase: "https://matomo.example.com",
+    siteId: 9,
+    linkTracking: false,
+  });
+
+  assert.deepEqual(window._paq, [
+    ["setTrackerUrl", "https://matomo.example.com/matomo.php"],
+    ["setSiteId", 9],
+    ["enableHeartBeatTimer", 15],
+  ]);
+  assert.ok(
+    !window._paq.some((cmd) => cmd[0] === "enableLinkTracking"),
+    "enableLinkTracking must not be pushed when linkTracking is false"
+  );
+  assert.ok(
+    !window._paq.some((cmd) => cmd[0] === "disableLinkTracking"),
+    "disableLinkTracking must not be pushed — it does not exist in older matomo.js"
+  );
+});
+
+test("enableLinkTracking(false) pushes no instruction", (t) => {
+  setupBrowserEnv();
+  t.after(cleanupBrowserEnv);
+
+  const tracker = createTracker();
+  tracker.enableLinkTracking(false);
+
+  assert.deepEqual(window._paq, []);
+});
+
+test("enableLinkTracking(true) pushes enableLinkTracking", (t) => {
+  setupBrowserEnv();
+  t.after(cleanupBrowserEnv);
+
+  const tracker = createTracker();
+  tracker.enableLinkTracking(true);
+
+  assert.deepEqual(window._paq, [["enableLinkTracking"]]);
 });
 
 test("trackPageView respects custom title and href", (t) => {
@@ -202,4 +247,51 @@ test("setTrackerUrl can re-create _paq when missing", (t) => {
   assert.deepEqual(window._paq, [
     ["setTrackerUrl", "https://matomo.example.com/matomo.php"],
   ]);
+});
+
+test("destroy() removes injected script from the DOM", (t) => {
+  const removedScripts = [];
+  const insertedScripts = [];
+
+  const existingScript = {
+    parentNode: {
+      insertBefore: (scriptElement) => {
+        // Simulate DOM insertion: the script element gets a parentNode
+        scriptElement.parentNode = {
+          removeChild: (el) => {
+            removedScripts.push(el);
+          },
+        };
+        insertedScripts.push(scriptElement);
+      },
+    },
+  };
+
+  global.window = {
+    _paq: [],
+    location: {
+      href: "https://app.example.com/current",
+      origin: "https://app.example.com",
+    },
+    document: {
+      title: "Test",
+      createElement: () => ({}),
+      getElementsByTagName: () => [existingScript],
+    },
+  };
+  global.document = global.window.document;
+
+  t.after(cleanupBrowserEnv);
+
+  const tracker = new MatomoTracker({
+    urlBase: "https://matomo.example.com",
+    siteId: 9,
+  });
+
+  assert.equal(insertedScripts.length, 1, "script should be injected");
+
+  tracker.destroy();
+
+  assert.equal(removedScripts.length, 1, "destroy should call removeChild on the injected script");
+  assert.equal(removedScripts[0], insertedScripts[0], "destroy should remove the same script that was injected");
 });

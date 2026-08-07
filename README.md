@@ -14,8 +14,9 @@ Written in **TypeScript** but designed to be fully compatible with **JavaScript*
 - ✅ **Custom Event Tracking** via `useMatomo()` hook
 - ✅ **Matomo Initialization** via `MatomoProvider`
 - ✅ **Cookie Control**: enable/disable cookies with a boolean
-- ✅ **Opt-out Support**
-- ✅ **Opt-in Support**
+- ✅ **Opt-out & Opt-in Support** via `optUserOut()` / `forgetUserOptOut()`
+- ✅ **User ID Reset** via `resetUserId()`
+- ✅ **Site Search Tracking** via `trackSiteSearch()`
 - ✅ **TypeScript-first**, JavaScript-friendly
 - ✅ **Tree-shakeable ESM/CJS output**
 
@@ -194,6 +195,35 @@ const MyComponent = () => {
 
 `customDimensions` are hit-scoped in these helpers, so they are automatically removed after each call.
 
+### Declarative Tracking with Data Attributes
+
+You can track events without writing any JavaScript by adding data attributes to
+your HTML elements. The `MatomoTracker` automatically picks up elements with
+`data-matomo-event="click"` and listens for click events:
+
+```html
+<button
+  data-matomo-event="click"
+  data-matomo-category="Video"
+  data-matomo-action="Play"
+  data-matomo-name="Getting Started"
+  data-matomo-value="42"
+>
+  Play Tutorial
+</button>
+```
+
+| Attribute               | Required | Description                                |
+| ----------------------- | -------- | ------------------------------------------ |
+| `data-matomo-event`     | ✅       | Must be `"click"`                          |
+| `data-matomo-category`  | ✅       | Event category (e.g. `"Video"`)            |
+| `data-matomo-action`    | ✅       | Event action (e.g. `"Play"`)               |
+| `data-matomo-name`      | ❌       | Event name (e.g. `"Getting Started"`)      |
+| `data-matomo-value`     | ❌       | Numeric value (e.g. `"42"`)                |
+
+This also works for elements dynamically added to the DOM — the tracker uses
+a `MutationObserver` under the hood.
+
 ---
 
 ## ⚙️ API
@@ -207,6 +237,7 @@ const MyComponent = () => {
 | `siteId`        | `string` or `number` | ✅       | Your Matomo website ID.                                                    |
 | `path`          | `string`             | ❌       | The current path of the router. Used for automatic page view tracking.     |
 | `trackCookies?` | `boolean`            | ❌       | If `false`, disables cookies (`disableCookies: true`). Default: `true`.    |
+| `linkTracking?` | `boolean`            | ❌       | If `false`, disables Matomo's automatic link click tracking. Useful for SPAs where it interferes with client-side routing. Default: `true`. |
 | `disabled?`     | `boolean`            | ❌       | If `true`, disables all tracking. Default: `false`.                        |
 
 ### `useMatomo()` Hook
@@ -220,14 +251,26 @@ Returns an object with:
 - `trackGoal(goalId: number | string, revenue?: number, customDimensions?)`: Tracks a conversion for a specific goal.
 - `setUserId(userId: string)`: Sets or updates a User ID for the current visitor.
 - `trackLink(url: string, linkType: 'link' | 'download', customDimensions?)`: Tracks an outbound link click or a download.
+- `trackSiteSearch(keyword: string, category?: string, count?: number, customDimensions?)`: Tracks an internal site search.
+- `resetUserId()`: Clears the currently set User ID (useful on logout).
+- `optUserOut()`: Opts the current user out of tracking.
+- `forgetUserOptOut()`: Reverses a previous opt-out, allowing tracking again.
 - `pushInstruction(instruction: any[])`: Allows pushing any raw instruction to the Matomo `_paq` array for advanced use cases (e.g., `pushInstruction(['setUserId', 'USER_ID_HERE'])`).
 
 ---
 
 ## Troubleshooting
 
-### `matomo.js` script fails to load
+### Double page views in development (React Strict Mode)
 
+If you see each page view tracked twice while developing, your app wraps the
+provider in `<React.StrictMode>`: Strict Mode intentionally mounts effects
+twice in development. Production builds track each page view exactly once —
+this is a dev-only artifact and requires no action.
+
+---
+
+### `matomo.js` script fails to load
 If you see an error in your browser console like "Laden fehlgeschlagen für das <script> mit der Quelle..." or "Failed to load resource..." for `matomo.js`, even if you can access the `matomo.js` URL directly in your browser, consider these common causes:
 
 1.  **CORS (Cross-Origin Resource Sharing)**:
@@ -248,6 +291,37 @@ If you see an error in your browser console like "Laden fehlgeschlagen für das 
 
 ---
 
+## 🧪 Automated Testing
+
+### Unit tests
+
+```bash
+npm test
+```
+
+Builds the package and runs the tracker/provider unit tests against the compiled output.
+
+### End-to-end tests (live Matomo instance)
+
+`npm run test:e2e` drives the example app in headless Chrome, performs real tracking
+interactions, and asserts the results via the Matomo Reporting API. It verifies page
+views, events, manual link tracking, automatic link tracking, and that `linkTracking={false}`
+disables automatic link clicks while keeping everything else working.
+
+Setup (the token stays local — `tests/e2e/.env` is gitignored):
+
+```bash
+cp tests/e2e/.env.example tests/e2e/.env
+# fill in MATOMO_URL, MATOMO_SITE_ID, MATOMO_TOKEN
+npm run test:e2e
+```
+
+The suite boots its own dev server (port 3100) and uses the system Chromium by default
+(override with `PUPPETEER_EXECUTABLE_PATH`). The example app must be installed and the
+local package build must be copied into its `node_modules` (see `examples/`).
+
+---
+
 ## 🔒 Privacy & Compliance
 
 - Fully respects user privacy: cookies and tracking can be disabled.
@@ -263,8 +337,12 @@ If you see an error in your browser console like "Laden fehlgeschlagen für das 
 - [x] Basic React Router integration for page views
 - [x] Next.js support
 - [x] TanStack Router support
+- [x] Add site search tracking (`trackSiteSearch`)
+- [x] Add opt-out / opt-in support (`optUserOut`, `forgetUserOptOut`)
+- [x] Add user ID reset (`resetUserId`)
+- [x] Declarative data-attribute tracking
 - [ ] Add more helper hooks
-- [ ] Add tests with Vitest or Jest
+- [ ] Add React component tests
 
 ---
 

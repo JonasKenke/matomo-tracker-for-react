@@ -36,8 +36,23 @@ function useMatomo(): UseMatomo {
     [context]
   );
 
+  const trackSiteSearch = useCallback(
+    (
+      keyword: string,
+      category?: string,
+      count?: number,
+      customDimensions?: HookCustomDimensions
+    ) => context.trackSiteSearch(keyword, category, count, customDimensions),
+    [context]
+  );
+
   const setUserId = useCallback(
     (userId: string) => context.setUserId(userId),
+    [context]
+  );
+
+  const resetUserId = useCallback(
+    () => context.resetUserId(),
     [context]
   );
 
@@ -55,13 +70,27 @@ function useMatomo(): UseMatomo {
     [context]
   );
 
+  const optUserOut = useCallback(
+    () => context.optUserOut(),
+    [context]
+  );
+
+  const forgetUserOptOut = useCallback(
+    () => context.forgetUserOptOut(),
+    [context]
+  );
+
   return {
     trackEvent,
     trackPageView,
     trackGoal,
+    trackSiteSearch,
     setUserId,
+    resetUserId,
     trackLink,
     pushInstruction,
+    optUserOut,
+    forgetUserOptOut,
   };
 }
 

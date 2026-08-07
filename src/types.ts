@@ -28,6 +28,13 @@ export interface MatomoProviderProps {
    */
   disabled?: boolean;
   /**
+   * Whether Matomo automatically tracks clicks on links and downloads.
+   * Set to `false` if automatic link tracking interferes with your SPA
+   * (e.g. client-side routing) — you can still track links manually via
+   * `useMatomo().trackLink`. Defaults to `true`.
+   */
+  linkTracking?: boolean;
+  /**
    * The current route path from your router. When this value changes, a new
    * page view is tracked automatically.
    *
@@ -57,13 +64,22 @@ export interface MatomoInstance {
     revenue?: number,
     customDimensions?: HookCustomDimensions,
   ) => void;
+  trackSiteSearch: (
+    keyword: string,
+    category?: string,
+    count?: number,
+    customDimensions?: HookCustomDimensions,
+  ) => void;
   setUserId: (userId: string) => void;
+  resetUserId: () => void;
   trackLink: (
     url: string,
     linkType: "link" | "download",
     customDimensions?: HookCustomDimensions,
   ) => void;
   pushInstruction: (instruction: any[]) => void;
+  optUserOut: () => void;
+  forgetUserOptOut: () => void;
 }
 
 // For useMatomo hook return type
